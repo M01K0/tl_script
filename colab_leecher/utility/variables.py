@@ -35,6 +35,12 @@ class BOT:
         user_session_string = ""
         is_premium_user = False
         large_file_threshold = 2097152000  # 2GB inicial - umbral para cambiar a cliente usuario
+        # 🆕 NUEVAS VARIABLES PARA DETECCIÓN MEJORADA
+        pyrofork_available = False  # Se configura en __init__.py
+        pyrogram_version = "unknown"  # Versión detectada de la librería
+        # Variables de estado del cliente usuario
+        user_client_active = False
+        user_client_instance = None
 
     class Mode:
         mode = "leech"

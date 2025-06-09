@@ -17,42 +17,64 @@ user_client = None
 
 def get_upload_client(file_size):
     """
-    Seleccionar el cliente correcto para la subida basándose en el tamaño del archivo
+    🚀 Seleccionar el cliente correcto para subida - Mejorado con detección de Pyrofork
     """
     global user_client
     
-    # Si el archivo es mayor al umbral y tenemos cliente de usuario premium
-    if file_size > BOT.Options.large_file_threshold and BOT.Options.is_premium_user and BOT.Options.user_session_string:
+    # 🔍 Verificar si tenemos todo lo necesario para modo Premium
+    can_use_premium = (
+        BOT.Options.pyrofork_available and 
+        BOT.Options.premium_mode and 
+        BOT.Options.is_premium_user and 
+        BOT.Options.user_session_string and
+        file_size > BOT.Options.large_file_threshold
+    )
+    
+    if can_use_premium:
         # Crear cliente de usuario si no existe
         if user_client is None:
             try:
-                # Usar pyrofork directamente (ya disponible en requirements.txt==2.2.11)
-                from pyrofork import Client
-                user_client = Client(
-                    "user_upload",
-                    api_id=colab_bot.api_id,
-                    api_hash=colab_bot.api_hash,
-                    session_string=BOT.Options.user_session_string
-                )
-                logging.info("✅ Cliente de usuario (Pyrofork 2.2.11) configurado para archivos >2GB")
-            except ImportError:
-                # Fallback extremadamente improbable
-                from pyrogram import Client
-                user_client = Client(
-                    "user_upload",
-                    api_id=colab_bot.api_id,
-                    api_hash=colab_bot.api_hash,
-                    session_string=BOT.Options.user_session_string
-                )
-                logging.warning("⚠️ Fallback a Pyrogram - funcionalidad limitada")
+                # Usar pyrofork detectado automáticamente
+                if BOT.Options.pyrofork_available:
+                    from pyrofork import Client
+                    user_client = Client(
+                        "user_upload",
+                        api_id=colab_bot.api_id,
+                        api_hash=colab_bot.api_hash,
+                        session_string=BOT.Options.user_session_string
+                    )
+                    logging.info(f"✅ Cliente Usuario (Pyrofork {BOT.Options.pyrogram_version}) configurado")
+                    BOT.Options.user_client_active = True
+                else:
+                    # Fallback - no debería pasar con la nueva detección
+                    from pyrogram import Client
+                    user_client = Client(
+                        "user_upload",
+                        api_id=colab_bot.api_id,
+                        api_hash=colab_bot.api_hash,
+                        session_string=BOT.Options.user_session_string
+                    )
+                    logging.warning("⚠️ Fallback a Pyrogram para cliente usuario")
+                    
+            except ImportError as e:
+                logging.error(f"❌ Error importando cliente: {e}")
+                user_client = None
+                BOT.Options.user_client_active = False
+            except Exception as e:
+                logging.error(f"❌ Error creando cliente usuario: {e}")
+                user_client = None
+                BOT.Options.user_client_active = False
         
-        # Retornar cliente de usuario para archivos grandes
+        # Retornar cliente de usuario para archivos grandes premium
         if user_client and BOT.Options.is_premium_user:
-            logging.info(f"📤 Usando cliente USUARIO (4GB) para archivo: {sizeUnit(file_size)}")
+            logging.info(f"📤 CLIENTE USUARIO (Premium 4GB): {sizeUnit(file_size)}")
             return user_client
+        else:
+            logging.warning(f"⚠️ Cliente usuario no disponible, usando bot: {sizeUnit(file_size)}")
     
-    # Retornar cliente bot para archivos pequeños o sin premium
-    logging.info(f"📤 Usando cliente BOT (2GB) para archivo: {sizeUnit(file_size)}")
+    # Retornar cliente bot para archivos estándar
+    mode_info = "Bot (2GB estándar)" if not can_use_premium else "Bot (fallback)"
+    logging.info(f"📤 CLIENTE BOT ({mode_info}): {sizeUnit(file_size)}")
     return colab_bot
 
 async def progress_bar(current, total):

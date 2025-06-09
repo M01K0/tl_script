@@ -10,9 +10,9 @@ opencv-python
 Pillow
 psutil
 pytz
-pyrofork==2.2.11
+--force-reinstall pyrofork==2.2.11
 requests
-tgcrypto
+tgcrypto>=1.2.5
 uvloop
 yt_dlp
 pymegatools
