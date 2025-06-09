@@ -443,7 +443,8 @@ async def help_command(client, message):
         "**🌟 MODO PREMIUM (4GB):**\n"
         "▸ `/premium` - Activar/desactivar modo 4GB 🌟\n"
         "▸ `/status` - Ver estado completo del bot 📊\n"
-        "▸ `/diagnose` - Diagnóstico del sistema 🔍\n\n"
+        "▸ `/diagnose` - Diagnóstico del sistema 🔍\n"
+        "▸ `/verify` - Verificación PyroFork detallada 🔍✨\n\n"
         
         "**🛠️ CONFIGURACIÓN:**\n"
         "▸ `/setname` - Nombre personalizado 📛\n"
@@ -455,16 +456,18 @@ async def help_command(client, message):
         
         "**🎯 PASOS PARA 4GB:**\n"
         "1. 💳 **Suscríbete a Telegram Premium**\n"
-        "2. 🔑 **Genera session string:**\n"
+        "2. 📦 **Instala PyroFork:** `/verify` para verificar\n"
+        "3. 🔑 **Genera session string:**\n"
         "   ```!cd /content/tl_script && python3 generate_user_session.py```\n"
-        "3. 🌟 **Activa Premium:** `/premium`\n"
-        "4. 📊 **Verifica estado:** `/status`\n"
-        "5. 🧪 **Prueba con archivos >2GB**\n\n"
+        "4. 🌟 **Activa Premium:** `/premium`\n"
+        "5. 📊 **Verifica estado:** `/status`\n"
+        "6. 🧪 **Prueba con archivos >2GB**\n\n"
         
         "**🚨 SOLUCIÓN DE PROBLEMAS:**\n"
-        "▸ Si no detecta Pyrofork: `/diagnose`\n"
-        "▸ Si falla Premium: regenera session string\n"
-        "▸ Para debug completo: `/status`",
+        "▸ **Verificación completa:** `/verify`\n"
+        "▸ **Si no detecta Pyrofork:** `/diagnose`\n"
+        "▸ **Si falla Premium:** regenera session string\n"
+        "▸ **Para debug completo:** `/status`",
         quote=True,
         reply_markup=InlineKeyboardMarkup(
             [
@@ -868,6 +871,129 @@ async def diagnose_system(client, message):
     
     msg = await message.reply_text(msg_text, quote=True)
     await sleep(45)
+    await message_deleter(message, msg)
+
+
+@colab_bot.on_message(filters.command("verify") & filters.private)
+async def verify_pyrofork_command(client, message):
+    """🔍 Comando para mostrar verificación detallada de PyroFork en Google Colab"""
+    global BOT
+    
+    # 🔍 ENCABEZADO DE VERIFICACIÓN
+    verify_text = "**🔍 VERIFICACIÓN DETALLADA DE PYROFORK**\n"
+    verify_text += "🌐 **Google Colab Environment**\n"
+    verify_text += "=" * 45 + "\n\n"
+    
+    # 📦 INFORMACIÓN BÁSICA DE LA LIBRERÍA
+    verify_text += "📦 **INFORMACIÓN DE LA LIBRERÍA:**\n"
+    verify_text += f"▸ **Versión detectada:** {BOT.Options.pyrogram_version}\n"
+    verify_text += f"▸ **PyroFork disponible:** {'✅ Sí' if BOT.Options.pyrofork_available else '❌ No'}\n"
+    verify_text += f"▸ **Estado Premium:** {'✅ Habilitado' if BOT.Options.pyrofork_available else '❌ Deshabilitado'}\n"
+    
+    # 🎯 CARACTERÍSTICAS DETECTADAS
+    if hasattr(BOT.Options, 'detected_features') and BOT.Options.detected_features:
+        verify_text += f"\n🎯 **CARACTERÍSTICAS ESPECÍFICAS DETECTADAS:**\n"
+        for i, feature in enumerate(BOT.Options.detected_features, 1):
+            verify_text += f"   {i}. ✅ {feature}\n"
+    else:
+        verify_text += f"\n🎯 **CARACTERÍSTICAS ESPECÍFICAS:**\n"
+        verify_text += f"   ⚠️ No se detectaron características específicas de PyroFork\n"
+    
+    # 🔧 MÓDULOS ESPECIALES DETECTADOS
+    if hasattr(BOT.Options, 'detected_modules') and BOT.Options.detected_modules:
+        verify_text += f"\n🔧 **MÓDULOS ESPECIALES DISPONIBLES:**\n"
+        for i, module in enumerate(BOT.Options.detected_modules, 1):
+            verify_text += f"   {i}. ✅ {module}\n"
+    else:
+        verify_text += f"\n🔧 **MÓDULOS ESPECIALES:**\n"
+        verify_text += f"   ⚠️ No se detectaron módulos especiales de PyroFork\n"
+    
+    # 📊 CAPACIDADES DE ARCHIVOS
+    max_size_gb = BOT.Options.max_file_size // (1024*1024*1024)
+    verify_text += f"\n📊 **CAPACIDADES DE ARCHIVOS:**\n"
+    verify_text += f"▸ **Límite máximo configurado:** {max_size_gb}GB\n"
+    verify_text += f"▸ **Límite en bytes:** {BOT.Options.max_file_size:,}\n"
+    verify_text += f"▸ **Umbral archivos grandes:** {BOT.Options.large_file_threshold // (1024*1024)}MB\n"
+    verify_text += f"▸ **Soporte 4GB:** {'✅ Disponible' if max_size_gb >= 4 else '❌ No disponible'}\n"
+    
+    # 🌟 CONFIGURACIÓN PREMIUM
+    verify_text += f"\n🌟 **CONFIGURACIÓN PREMIUM:**\n"
+    verify_text += f"▸ **Modo Premium:** {'✅ Activado' if BOT.Options.premium_mode else '❌ Desactivado'}\n"
+    verify_text += f"▸ **Usuario Premium:** {'✅ Detectado' if BOT.Options.is_premium_user else '❌ No detectado'}\n"
+    verify_text += f"▸ **Session String:** {'✅ Cargado' if BOT.Options.user_session_string else '❌ No cargado'}\n"
+    verify_text += f"▸ **Cliente Usuario:** {'✅ Activo' if BOT.Options.user_client_active else '❌ Inactivo'}\n"
+    
+    # ⚠️ ADVERTENCIAS DEL SISTEMA
+    if hasattr(BOT.Options, 'system_warnings') and BOT.Options.system_warnings:
+        verify_text += f"\n⚠️ **ADVERTENCIAS DEL SISTEMA:**\n"
+        for i, warning in enumerate(BOT.Options.system_warnings, 1):
+            verify_text += f"   {i}. ⚠️ {warning}\n"
+    
+    # 🔍 INFORMACIÓN TÉCNICA AVANZADA
+    verify_text += f"\n🔍 **INFORMACIÓN TÉCNICA:**\n"
+    
+    # Verificar instalación actual en tiempo real
+    try:
+        import pkg_resources
+        try:
+            pyrofork_pkg = pkg_resources.get_distribution("pyrofork")
+            verify_text += f"▸ **PyroFork en pip:** ✅ v{pyrofork_pkg.version}\n"
+            verify_text += f"▸ **Ubicación:** {pyrofork_pkg.location[:50]}...\n"
+        except pkg_resources.DistributionNotFound:
+            verify_text += f"▸ **PyroFork en pip:** ❌ No encontrado\n"
+            
+        try:
+            pyrogram_pkg = pkg_resources.get_distribution("pyrogram")
+            verify_text += f"▸ **Pyrogram original:** ⚠️ v{pyrogram_pkg.version} (conflicto potencial)\n"
+        except pkg_resources.DistributionNotFound:
+            verify_text += f"▸ **Pyrogram original:** ✅ No instalado (correcto)\n"
+    except ImportError:
+        verify_text += f"▸ **Verificación pip:** ⚠️ No disponible\n"
+    
+    # Verificar TgCrypto
+    try:
+        import tgcrypto
+        verify_text += f"▸ **TgCrypto:** ✅ Disponible (velocidad optimizada)\n"
+    except ImportError:
+        verify_text += f"▸ **TgCrypto:** ⚠️ No disponible (velocidad reducida)\n"
+    
+    # 💡 RECOMENDACIONES ESPECÍFICAS
+    verify_text += f"\n💡 **RECOMENDACIONES:**\n"
+    
+    if not BOT.Options.pyrofork_available:
+        verify_text += f"1. 📦 **Instalar PyroFork:**\n"
+        verify_text += f"   ```!pip install --force-reinstall pyrofork==2.2.11```\n"
+        verify_text += f"   Luego reinicia ejecutando main.py\n"
+    elif BOT.Options.pyrofork_available and not BOT.Options.user_session_string:
+        verify_text += f"1. 🔑 **Generar Session String para Premium:**\n"
+        verify_text += f"   ```!cd /content/tl_script && python3 generate_user_session.py```\n"
+    elif BOT.Options.pyrofork_available and BOT.Options.user_session_string and not BOT.Options.premium_mode:
+        verify_text += f"1. 🌟 **Activar Modo Premium:**\n"
+        verify_text += f"   Ejecuta: `/premium`\n"
+    else:
+        verify_text += f"1. 🎉 **¡Configuración perfecta!**\n"
+        verify_text += f"   Tu sistema está listo para 4GB\n"
+    
+    # Recomendación adicional para TgCrypto
+    try:
+        import tgcrypto
+    except ImportError:
+        verify_text += f"2. ⚡ **Optimizar velocidad:**\n"
+        verify_text += f"   ```!pip install tgcrypto```\n"
+    
+    # 🔄 COMANDOS ÚTILES
+    verify_text += f"\n🔄 **COMANDOS ÚTILES:**\n"
+    verify_text += f"▸ `/status` - Estado general del bot\n"
+    verify_text += f"▸ `/diagnose` - Diagnóstico de problemas\n"
+    verify_text += f"▸ `/premium` - Activar/desactivar modo Premium\n"
+    verify_text += f"▸ `/help` - Lista completa de comandos\n"
+    
+    # 📋 PIE DE PÁGINA
+    verify_text += f"\n📋 **Verificación completada en Google Colab**\n"
+    verify_text += f"🌐 Entorno: `/content/tl_script/`\n"
+    
+    msg = await message.reply_text(verify_text, quote=True)
+    await sleep(45)  # Más tiempo para leer toda la información
     await message_deleter(message, msg)
 
 
