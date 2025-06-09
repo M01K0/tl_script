@@ -586,7 +586,7 @@ async def toggle_premium(client, message):
                 
                 # Configurar variables según detección
                 BOT.Options.is_premium_user = is_premium
-                BOT.Options.max_file_size = 4194304000 if is_premium else 2097152000  # 4GB o 2GB
+                BOT.Options.max_file_size = 4294967296 if is_premium else 2147483648  # 4GB CORRECTO o 2GB CORRECTO
                 
                 if is_premium:
                     status = "**🎉 MODO PREMIUM ACTIVADO EXITOSAMENTE**\n\n"
@@ -617,11 +617,11 @@ async def toggle_premium(client, message):
             except ImportError:
                 # Esto no debería pasar si la detección funciona bien
                 BOT.Options.is_premium_user = False
-                BOT.Options.max_file_size = 2097152000
+                BOT.Options.max_file_size = 2147483648
                 status = "❌ **ERROR CRÍTICO:** Pyrofork no disponible en tiempo de ejecución\n\n🔄 **Reinicia el bot**"
             except Exception as e:
                 BOT.Options.is_premium_user = False
-                BOT.Options.max_file_size = 2097152000
+                BOT.Options.max_file_size = 2147483648
                 status = f"**❌ ERROR AL VERIFICAR PREMIUM**\n\n"
                 status += f"🔄 Session string válido pero error: {str(e)[:100]}...\n"
                 status += f"📋 Usando límite de 2GB por seguridad\n\n"
@@ -630,7 +630,7 @@ async def toggle_premium(client, message):
                 status += f"   2. ✅ Verifica conexión a internet\n"
                 status += f"   3. 🔑 Revisa credenciales de API"
         else:
-            BOT.Options.max_file_size = 2097152000   # 2GB
+            BOT.Options.max_file_size = 2147483648   # 2GB
             BOT.Options.is_premium_user = False
             BOT.Options.user_session_string = ""
             BOT.Options.user_client_active = False

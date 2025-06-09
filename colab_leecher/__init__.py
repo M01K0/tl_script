@@ -16,7 +16,7 @@ def verify_pyrofork_colab():
         'features_found': [],
         'modules_found': [],
         'is_premium_ready': False,
-        'max_file_size': 2097152000,  # 2GB por defecto
+        'max_file_size': 2147483648,  # 2GB CORRECTO: 2 * 1024 * 1024 * 1024
         'warnings': []
     }
     
@@ -122,7 +122,7 @@ def verify_pyrofork_colab():
         
         if is_pyrofork:
             verification_results['is_premium_ready'] = True
-            verification_results['max_file_size'] = 4194304000  # 4GB
+            verification_results['max_file_size'] = 4294967296  # 4GB CORRECTO: 4 * 1024 * 1024 * 1024
             print("   ✅ PyroFork confirmado - Modo Premium habilitado")
             print("   🚀 Archivos hasta 4GB soportados")
         else:
@@ -233,7 +233,7 @@ from .utility.variables import BOT
 
 # 🔧 CONFIGURACIÓN AVANZADA BASADA EN VERIFICACIÓN
 BOT.Options.max_file_size = verification_result['max_file_size']
-BOT.Options.large_file_threshold = 2097152000  # 2GB umbral para cambiar a cliente usuario
+BOT.Options.large_file_threshold = 2147483648  # 2GB CORRECTO - umbral para cambiar a cliente usuario
 BOT.Options.pyrofork_available = verification_result['is_premium_ready']
 BOT.Options.pyrogram_version = verification_result['version']
 BOT.Options.detected_features = verification_result['features_found']

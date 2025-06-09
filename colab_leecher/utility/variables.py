@@ -23,18 +23,18 @@ class BOT:
         stream_upload = True
         convert_video = True
         convert_quality = False
-        is_split = True
+        is_split = False
         caption = "code"
         video_out = "mp4"
         custom_name = ""
         zip_pswd = ""
         unzip_pswd = ""
         # Variables para soporte Premium y límites dinámicos
-        max_file_size = 2097152000  # 2GB inicial - se reconfigura a 4GB si Premium
+        max_file_size = 2147483648  # 2GB CORRECTO - se reconfigura a 4GB si Premium
         premium_mode = False
         user_session_string = ""
         is_premium_user = False
-        large_file_threshold = 2097152000  # 2GB inicial - umbral para cambiar a cliente usuario
+        large_file_threshold = 2147483648  # 2GB CORRECTO - umbral para cambiar a cliente usuario
         # 🆕 NUEVAS VARIABLES PARA DETECCIÓN MEJORADA
         pyrofork_available = False  # Se configura en __init__.py
         pyrogram_version = "unknown"  # Versión detectada de la librería
