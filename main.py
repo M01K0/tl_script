@@ -1,11 +1,11 @@
-# copyright 2023 © Xron Trix | https://github.com/Xrontrix10
+# copyright 2023 © M01K0 | https://github.com/M01K0/tl_script
 
 
 # @title 🖥️ Main Colab Leech Code
 
 # @title Main Code
 # @markdown <div><center><img src="https://user-images.githubusercontent.com/125879861/255391401-371f3a64-732d-4954-ac0f-4f093a6605e1.png" height=80></center></div>
-# @markdown <center><h4><a href="https://github.com/XronTrix10/Telegram-Leecher/wiki/INSTRUCTIONS">READ</a> How to use</h4></center>
+# @markdown <center><h4><a href="https://github.com/M01K0/tl_script/wiki/INSTRUCTIONS">READ</a> How to use</h4></center>
 
 # @markdown <br>
 
@@ -24,21 +24,12 @@ Working = True
 
 banner = '''
 
- ____   ____.______  ._______  .______       _____._.______  .___  ____   ____
- \\   \\_/   /: __   \\ : .___  \\ :      \\      \\__ _:|: __   \\ : __| \\   \\_/   /
-  \\___ ___/ |  \\____|| :   |  ||       |       |  :||  \\____|| : |  \\___ ___/ 
-  /   _   \\ |   :  \\ |     :  ||   |   |       |   ||   :  \\ |   |  /   _   \\ 
- /___/ \\___\\|   |___\\ \\_. ___/ |___|   |       |   ||   |___\\|   | /___/ \\___\\
-            |___|       :/         |___|       |___||___|    |___|            
-                        :                                                     
-                                                                              
- 
-              _____     __     __     __              __          
-             / ___/__  / /__ _/ /    / / ___ ___ ____/ /  ___ ____
-            / /__/ _ \\/ / _ `/ _ \\  / /_/ -_) -_) __/ _ \\/ -_) __/
-            \\___/\\___/_/\\_,_/_.__/ /____|__/\\__/\\__/_//_/\\__/_/   
-
-                                                
+███╗   ███╗ ██████╗ ██╗   ██╗██╗██████╗ ███████╗ ██████╗ ███████╗
+████╗ ████║██╔═══██╗██║   ██║██║██╔══██╗██╔════╝██╔═══██╗██╔════╝
+██╔████╔██║██║   ██║██║   ██║██║██║  ██║█████╗  ██║   ██║███████╗
+██║╚██╔╝██║██║   ██║╚██╗ ██╔╝██║██║  ██║██╔══╝  ██║   ██║╚════██║
+██║ ╚═╝ ██║╚██████╔╝ ╚████╔╝ ██║██████╔╝███████╗╚██████╔╝███████║
+╚═╝     ╚═╝ ╚═════╝   ╚═══╝  ╚═╝╚═════╝ ╚══════╝ ╚═════╝ ╚══════╝
 
 '''
 
@@ -65,11 +56,11 @@ if len(str(DUMP_ID)) == 10 and "-100" not in str(DUMP_ID):
 if os.path.exists("/content/sample_data"):
     shutil.rmtree("/content/sample_data")
 
-cmd = "git clone https://github.com/XronTrix10/Telegram-Leecher"
+cmd = "git clone https://github.com/M01K0/tl_script"
 proc = subprocess.run(cmd, shell=True)
 cmd = "apt update && apt install ffmpeg aria2"
 proc = subprocess.run(cmd, shell=True)
-cmd = "pip3 install -r /content/Telegram-Leecher/requirements.txt"
+cmd = "pip3 install -r /content/tl_script/requirements.txt"
 proc = subprocess.run(cmd, shell=True)
 
 credentials = {
@@ -80,14 +71,14 @@ credentials = {
     "DUMP_ID": DUMP_ID,
 }
 
-with open('/content/Telegram-Leecher/credentials.json', 'w') as file:
+with open('/content/tl_script/credentials.json', 'w') as file:
     file.write(json.dumps(credentials))
 
 Working = False
 
-if os.path.exists("/content/Telegram-Leecher/my_bot.session"):
-    os.remove("/content/Telegram-Leecher/my_bot.session") # Remove previous bot session
+if os.path.exists("/content/tl_script/my_bot.session"):
+    os.remove("/content/tl_script/my_bot.session") # Remove previous bot session
     
 print("\rStarting Bot....")
 
-!cd /content/Telegram-Leecher/ && python3 -m colab_leecher #type:ignore
+!cd /content/tl_script/ && python3 -m colab_leecher #type:ignore

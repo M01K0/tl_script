@@ -1,4 +1,4 @@
-# copyright 2023 © Xron Trix | https://github.com/Xrontrix10
+# copyright 2023 © M01K0 | https://github.com/M01K0/tl_script
 
 
 import os
@@ -264,7 +264,7 @@ async def SendLogs(is_leech: bool):
                     [
                         InlineKeyboardButton(
                             "Git Repo 🪲",
-                            url="https://github.com/XronTrix10/Telegram-Leecher",
+                            url="https://github.com/M01K0/tl_script",
                         ),
                     ],
                     [

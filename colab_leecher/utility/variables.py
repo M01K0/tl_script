@@ -1,4 +1,4 @@
-# copyright 2023 © Xron Trix | https://github.com/Xrontrix10
+# copyright 2023 © M01K0 | https://github.com/M01K0/tl_script
 
 
 from time import time
@@ -29,6 +29,12 @@ class BOT:
         custom_name = ""
         zip_pswd = ""
         unzip_pswd = ""
+        # Variables para soporte Premium y límites dinámicos
+        max_file_size = 2097152000  # 2GB inicial - se reconfigura a 4GB si Premium
+        premium_mode = False
+        user_session_string = ""
+        is_premium_user = False
+        large_file_threshold = 2097152000  # 2GB inicial - umbral para cambiar a cliente usuario
 
     class Mode:
         mode = "leech"
@@ -71,11 +77,11 @@ class BotTimes:
 
 
 class Paths:
-    WORK_PATH = "/content/Telegram-Leecher/BOT_WORK"
-    THMB_PATH = "/content/Telegram-Leecher/colab_leecher/Thumbnail.jpg"
+    WORK_PATH = "/content/tl_script/BOT_WORK"
+    THMB_PATH = "/content/tl_script/colab_leecher/Thumbnail.jpg"
     VIDEO_FRAME = f"{WORK_PATH}/video_frame.jpg"
     HERO_IMAGE = f"{WORK_PATH}/Hero.jpg"
-    DEFAULT_HERO =  "/content/Telegram-Leecher/custom_thmb.jpg"
+    DEFAULT_HERO =  "/content/tl_script/custom_thmb.jpg"
     MOUNTED_DRIVE = "/content/drive"
     down_path = f"{WORK_PATH}/Downloads"
     temp_dirleech_path = f"{WORK_PATH}/dir_leech_temp"

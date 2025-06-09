@@ -1,4 +1,4 @@
-# copyright 2023 © Xron Trix | https://github.com/Xrontrix10
+# copyright 2023 © M01K0 | https://github.com/M01K0/tl_script
 
 
 import os
@@ -112,7 +112,7 @@ async def videoConverter(file: str):
 
 async def sizeChecker(file_path, remove: bool):
     global Paths
-    max_size = 2097152000  # 2 GB
+    max_size = BOT.Options.max_file_size  # Dinámico: 2GB o 4GB según Premium
     file_size = os.stat(file_path).st_size
 
     if file_size > max_size:
@@ -131,8 +131,9 @@ async def sizeChecker(file_path, remove: bool):
         else:
             f_type = fileType(file_path)
             if f_type == "video" and BOT.Options.is_split:
-                # TODO: Store the size in a constant variable
-                await splitVideo(file_path, 2000, remove)
+                # Usar tamaño dinámico para división de video también
+                split_size_mb = max_size // (1024 * 1024)  # Convertir a MB
+                await splitVideo(file_path, split_size_mb, remove)
             else:
                 await archive(file_path, True, remove)
             await sleep(2)

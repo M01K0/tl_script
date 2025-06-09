@@ -1,1 +1,1 @@
-# copyright 2023 © Xron Trix | https://github.com/Xrontrix10
+# copyright 2023 © M01K0 | https://github.com/M01K0/tl_script

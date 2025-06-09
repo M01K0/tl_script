@@ -1,4 +1,4 @@
-# copyright 2024 © Xron Trix | https://github.com/Xrontrix10
+# copyright 2024 © M01K0 | https://github.com/M01K0/tl_script
 
 
 import logging, os
@@ -25,7 +25,7 @@ async def start(client, message):
             [
                 InlineKeyboardButton(
                     "Repository 🦄",
-                    url="https://github.com/XronTrix10/Telegram-Leecher",
+                    url="https://github.com/M01K0/tl_script",
                 ),
                 InlineKeyboardButton("Support 💝", url="https://t.me/Colab_Leecher"),
             ],
@@ -427,14 +427,14 @@ async def unzip_pswd(client, message):
 @colab_bot.on_message(filters.command("help") & filters.private)
 async def help_command(client, message):
     msg = await message.reply_text(
-        "Send /start To Check If I am alive 🤨\n\nSend /colabxr and follow prompts to start transloading 🚀\n\nSend /settings to edit bot settings ⚙️\n\nSend /setname To Set Custom File Name 📛\n\nSend /zipaswd To Set Password For Zip File 🔐\n\nSend /unzipaswd To Set Password to Extract Archives 🔓\n\n⚠️ **You can ALWAYS SEND an image To Set it as THUMBNAIL for your files 🌄**",
+        "Send /start To Check If I am alive 🤨\n\nSend /colabxr and follow prompts to start transloading 🚀\n\nSend /settings to edit bot settings ⚙️\n\nSend /setname To Set Custom File Name 📛\n\nSend /zipaswd To Set Password For Zip File 🔐\n\nSend /unzipaswd To Set Password to Extract Archives 🔓\n\nSend /premium To Enable 4GB Mode 🌟\n\n⚠️ **You can ALWAYS SEND an image To Set it as THUMBNAIL for your files 🌄**",
         quote=True,
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
                         "Instructions 📖",
-                        url="https://github.com/XronTrix10/Telegram-Leecher/wiki/INSTRUCTIONS",
+                        url="https://github.com/M01K0/tl_script/wiki/INSTRUCTIONS",
                     ),
                 ],
                 [
@@ -451,6 +451,155 @@ async def help_command(client, message):
         ),
     )
     await sleep(15)
+    await message_deleter(message, msg)
+
+
+@colab_bot.on_message(filters.command("premium") & filters.private)
+async def toggle_premium(client, message):
+    """Comando para activar/desactivar modo Premium 4GB"""
+    global BOT
+    
+    # Verificar si existe session string
+    session_file = "/content/tl_script/user_session.txt"
+    
+    try:
+        if not os.path.exists(session_file):
+            msg = await message.reply_text(
+                "⚠️ **MODO PREMIUM NO DISPONIBLE**\n\n"
+                "📋 **Para habilitar archivos de 4GB necesitas:**\n"
+                "1. 📱 Generar tu session string de usuario\n"
+                "2. 💳 Tener Telegram Premium activo\n\n"
+                "🚀 **Pasos a seguir:**\n"
+                "```\n"
+                "!cd /content/tl_script && python3 generate_user_session.py\n"
+                "```\n\n"
+                "💡 **Después ejecuta** `/premium` **para activar**",
+                quote=True
+            )
+            await sleep(20)
+            await message_deleter(message, msg)
+            return
+        
+        # Leer session string
+        with open(session_file, 'r') as f:
+            session_string = f.read().strip()
+        
+        if not session_string:
+            msg = await message.reply_text(
+                "❌ **Session string vacío o inválido**\n\n"
+                "🔄 **Regenera tu session string:**\n"
+                "```\n"
+                "!cd /content/tl_script && python3 generate_user_session.py\n"
+                "```",
+                quote=True
+            )
+            await sleep(15)
+            await message_deleter(message, msg)
+            return
+        
+        # Alternar modo premium
+        BOT.Options.premium_mode = not BOT.Options.premium_mode
+        BOT.Options.user_session_string = session_string
+        
+        if BOT.Options.premium_mode:
+            # Verificar si el usuario tiene Telegram Premium
+            try:
+                # Usar pyrofork directamente
+                from pyrofork import Client
+                user_client = Client(
+                    "temp_premium_check",
+                    api_id=colab_bot.api_id,
+                    api_hash=colab_bot.api_hash,
+                    session_string=session_string
+                )
+                await user_client.start()
+                me = await user_client.get_me()
+                is_premium = hasattr(me, 'is_premium') and me.is_premium
+                await user_client.stop()
+                
+                BOT.Options.is_premium_user = is_premium
+                BOT.Options.max_file_size = 4194304000 if is_premium else 2097152000  # 4GB o 2GB
+                
+                if is_premium:
+                    status = "**🌟 MODO PREMIUM ACTIVADO**\n\n✅ Límite de archivos: **4GB**\n✅ Cliente de usuario habilitado\n✅ Soporte completo para Telegram Premium"
+                else:
+                    status = "**⚠️ MODO ACTIVADO - SIN PREMIUM**\n\n📋 Límite de archivos: **2GB**\n💡 Suscríbete a Telegram Premium para 4GB"
+                    
+            except Exception as e:
+                BOT.Options.is_premium_user = False
+                BOT.Options.max_file_size = 2097152000
+                status = f"**❌ ERROR AL VERIFICAR PREMIUM**\n\n🔄 Session string válido pero error: {str(e)[:100]}...\n📋 Usando límite de 2GB por seguridad"
+        else:
+            BOT.Options.max_file_size = 2097152000   # 2GB
+            BOT.Options.is_premium_user = False
+            BOT.Options.user_session_string = ""
+            status = "**📋 MODO ESTÁNDAR ACTIVADO**\n\n✅ Límite de archivos: **2GB**\n✅ División automática para archivos > 2GB"
+        
+        # Información adicional
+        from colab_leecher import PYROFORK_AVAILABLE
+        engine_status = "Pyrofork ✅" if PYROFORK_AVAILABLE else "Pyrogram ⚠️"
+        max_theoretical = "4GB (Pyrofork ✅)" if PYROFORK_AVAILABLE else "2GB (Pyrogram ⚠️)"
+        
+        status += f"\n\n📊 **INFORMACIÓN TÉCNICA:**"
+        status += f"\n▸ Motor: {engine_status}"
+        status += f"\n▸ Máximo Teórico: {max_theoretical}"
+        status += f"\n▸ Modo Premium: {'✅ Activado' if BOT.Options.premium_mode else '❌ Desactivado'}"
+        status += f"\n▸ Límite Configurado: {BOT.Options.max_file_size // (1024*1024*1024)}GB"
+        
+        msg = await message.reply_text(status, quote=True)
+        await sleep(25)
+        await message_deleter(message, msg)
+        
+    except Exception as e:
+        msg = await message.reply_text(
+            f"❌ **ERROR EN COMANDO PREMIUM:**\n\n{str(e)}\n\n"
+            "💡 **Intenta regenerar tu session string:**\n"
+            "```\n"
+            "!cd /content/tl_script && python3 generate_user_session.py\n"
+            "```",
+            quote=True
+        )
+        await sleep(20)
+        await message_deleter(message, msg)
+
+
+@colab_bot.on_message(filters.command("status") & filters.private)
+async def status_command(client, message):
+    """Comando para mostrar el estado actual del bot"""
+    global BOT
+    
+    # Información del motor
+    from colab_leecher import PYROFORK_AVAILABLE
+    
+    status_text = "**📊 ESTADO DEL BOT**\n\n"
+    status_text += f"🔧 **Motor:** {'Pyrofork' if PYROFORK_AVAILABLE else 'Pyrogram'}\n"
+    status_text += f"🌟 **Modo Premium:** {'✅ Activado' if BOT.Options.premium_mode else '❌ Desactivado'}\n"
+    status_text += f"📊 **Límite Configurado:** {BOT.Options.max_file_size // (1024*1024*1024)}GB ({BOT.Options.max_file_size:,} bytes)\n"
+    status_text += f"👤 **Usuario Premium:** {'✅ Detectado' if BOT.Options.is_premium_user else '❌ No detectado'}\n"
+    status_text += f"🔑 **Session String:** {'✅ Disponible' if BOT.Options.user_session_string else '❌ No disponible'}\n"
+    
+    # Estado de tareas
+    status_text += f"\n📋 **ESTADO DE TAREAS:**\n"
+    status_text += f"▸ Bot Iniciado: {'✅ Sí' if BOT.State.started else '❌ No'}\n"
+    status_text += f"▸ Tarea en Progreso: {'🚀 Sí' if BOT.State.task_going else '✅ Libre'}\n"
+    
+    # Configuración actual
+    status_text += f"\n⚙️ **CONFIGURACIÓN:**\n"
+    status_text += f"▸ Modo: {BOT.Mode.mode.capitalize()}\n"
+    status_text += f"▸ Tipo: {BOT.Mode.type.capitalize()}\n"
+    status_text += f"▸ Dividir Videos: {'✅' if BOT.Options.is_split else '❌'}\n"
+    status_text += f"▸ Convertir Video: {'✅' if BOT.Options.convert_video else '❌'}\n"
+    
+    # Advertencias y recomendaciones
+    LARGE_FILE_SUPPORT = PYROFORK_AVAILABLE
+    if not LARGE_FILE_SUPPORT and BOT.Options.premium_mode:
+        status_text += f"\n⚠️ **ADVERTENCIA:** Modo premium activado pero usando Pyrogram estándar\n"
+        status_text += f"📝 **Recomendación:** Pyrofork ya está instalado, reinicia el bot\n"
+    elif LARGE_FILE_SUPPORT and BOT.Options.premium_mode:
+        status_text += f"\n🎉 **¡PERFECTO!** Configuración óptima para archivos de 4GB\n"
+    
+    msg = await message.reply_text(status_text, quote=True)
+    await sleep(30)
     await message_deleter(message, msg)
 
 

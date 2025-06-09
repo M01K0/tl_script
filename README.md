@@ -13,7 +13,7 @@
 
 ## 🎓 **How To Deploy**
 
-<h3>Read <a href="https://github.com/XronTrix10/Telegram-Leecher/wiki/INSTRUCTIONS">INSTRUCTIONS</a></h3>
+<h3>Read <a href="https://github.com/M01K0/tl_script/wiki/INSTRUCTIONS">INSTRUCTIONS</a></h3>
 
 <br>
 
@@ -50,8 +50,33 @@
 - No need of VPS or RDP
 - Immersive Network speed in Google Servers
 - Unlimited Storage in Telegram
-- Upload Files of size up to 2000 MB
-- Premium Upload up to 4000 MB ( Coming Soon ♨️)
+- Upload Files of size up to 2000 MB (Standard Users)
+- **Premium Upload up to 4000 MB (Telegram Premium Users) 🌟**
+
+## **📊 File Size Limits**
+
+| User Type | Maximum File Size | Requirements |
+|-----------|------------------|--------------|
+| **Standard** | 2GB (2,000 MB) | ✅ Default - No requirements |
+| **Premium** | 4GB (4,000 MB) | 💳 Telegram Premium + Session String |
+
+### **🌟 How to Enable 4GB Mode:**
+
+1. **Subscribe to Telegram Premium** 💳
+2. **Generate User Session String:**
+   ```bash
+   !cd /content/tl_script && python3 generate_user_session.py
+   ```
+3. **Activate Premium Mode in your bot:**
+   ```
+   /premium
+   ```
+4. **Verify Status:**
+   ```
+   /status
+   ```
+
+**Note:** The bot automatically detects your Telegram Premium status and adjusts file size limits accordingly.
 
 ## **🚀 UPTO 200 MiB/s Download Speed and 30 MiB/s Upload Speed**
 
@@ -77,7 +102,7 @@
 
 ## **⚖️ License**
 
-<h4><a href="https://github.com/XronTrix10/Telegram-Leecher/blob/main/LICENSE">GPL-3.0 license</a></h4>
+<h4><a href="https://github.com/M01K0/tl_script/blob/main/LICENSE">GPL-3.0 license</a></h4>
 
 <br>
 
