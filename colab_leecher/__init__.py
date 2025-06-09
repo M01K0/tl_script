@@ -1,7 +1,17 @@
 # copyright 2023 © M01K0 | https://github.com/M01K0/tl_script
 
 import logging, json, sys
-from uvloop import install
+
+# 🔧 IMPORTACIÓN OPCIONAL DE UVLOOP - Compatible con Google Colab
+try:
+    from uvloop import install
+    install()
+    print("⚡ uvloop activado - Rendimiento optimizado")
+except ImportError:
+    print("⚠️ uvloop no disponible - Usando event loop estándar")
+    print("💡 Para mejor rendimiento: pip install uvloop")
+except Exception as e:
+    print(f"⚠️ uvloop falló: {str(e)[:50]}... - Usando event loop estándar")
 
 # 🔍 DETECCIÓN MEJORADA DE PYROFORK - Similar a generate_user_session.py
 PYROFORK_AVAILABLE = False
@@ -39,8 +49,6 @@ OWNER = credentials["USER_ID"]
 DUMP_ID = credentials["DUMP_ID"]
 
 logging.basicConfig(level=logging.INFO)
-
-install()
 
 colab_bot = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
